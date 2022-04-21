@@ -33,7 +33,11 @@ export class Logger {
       const url = `${this.logUrl}/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
-      console.log(chalk.gray(dayjs().format('DD/MM/YYYY, hh:mm:dd:ss')), '[', colors[level](level), '] :', message);
+      console.log(
+        chalk.gray(dayjs().format('YYYY-MM-DD, hh:mm:ss')),
+        '[' + colors[level](level.toUpperCase()) + '] :',
+        message,
+      );
     }
   }
 
