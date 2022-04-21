@@ -1,9 +1,9 @@
 import axios from 'axios';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as dayjs from 'dayjs';
 
 type Levels = 'emerge' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug';
-const colors: Record<Levels, typeof chalk> = {
+const colors: Record<Levels, chalk.ChalkFunction> = {
   error: chalk.red,
   info: chalk.blue,
   warning: chalk.yellow,
