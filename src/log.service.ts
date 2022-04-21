@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Log from 'loglevel';
 
 export class Logger {
   logUrl: string | undefined;
@@ -15,8 +14,8 @@ export class Logger {
     this.application = application;
   }
 
-  private console(fn: Function, message: string) {
-    fn.call(null, this.application, ':', message);
+  private console(fn: Function, level: string, message: string) {
+    fn.call(null, `${new Date().toISOString()} [${level}]:`, message);
   }
 
   private logs(
@@ -27,18 +26,18 @@ export class Logger {
       const url = `${this.logUrl}/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
-      const { info, debug, error, warn } = Log;
+      const { info, debug, error, warn } = console;
       switch (level) {
         case 'warning':
-          this.console(warn, message);
+          this.console(warn, 'warning', message);
         case 'info':
-          this.console(info, message);
+          this.console(info, 'info', message);
           break;
         case 'debug':
-          this.console(debug, message);
+          this.console(debug, 'debug', message);
           break;
         case 'error':
-          this.console(error, message);
+          this.console(error, 'error', message);
           break;
       }
     }
