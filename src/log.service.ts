@@ -1,30 +1,18 @@
 import axios from 'axios';
-import Log, { LoggerOptions } from '@ptkdev/logger';
+import Log from 'loglevel';
 
 export class Logger {
   logUrl: string | undefined;
   printOnly: boolean;
   application: string;
-  log: Log;
   constructor(application: string, printOnly = false) {
     if (!application) {
       throw new Error('Application name cannot be null');
     }
 
-    const options: LoggerOptions = {
-      language: 'en',
-      colors: true,
-      debug: true,
-      info: true,
-      warning: true,
-      error: true,
-      sponsor: false,
-    };
-
     this.printOnly = printOnly;
     this.logUrl = process.env.LOG_URL;
     this.application = application;
-    this.log = new Log(options);
   }
 
   private console(fn: Function, message: string) {
@@ -39,10 +27,10 @@ export class Logger {
       const url = `${this.logUrl}/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
-      const { info, debug, error, warning } = this.log;
+      const { info, debug, error, warn } = Log;
       switch (level) {
         case 'warning':
-          this.console(warning, message);
+          this.console(warn, message);
         case 'info':
           this.console(info, message);
           break;
