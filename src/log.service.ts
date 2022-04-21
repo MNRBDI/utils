@@ -1,4 +1,18 @@
 import axios from 'axios';
+import chalk from 'chalk';
+import * as dayjs from 'dayjs';
+
+type Levels = 'emerge' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug';
+const colors: Record<Levels, typeof chalk> = {
+  error: chalk.red,
+  info: chalk.blue,
+  warning: chalk.yellow,
+  notice: chalk.green,
+  debug: chalk.magenta,
+  emerge: chalk.cyan,
+  crit: chalk.redBright,
+  alert: chalk.blueBright,
+};
 
 export class Logger {
   logUrl: string | undefined;
@@ -14,32 +28,12 @@ export class Logger {
     this.application = application;
   }
 
-  private console(fn: Function, level: string, message: string) {
-    fn.call(null, `${new Date().toISOString()} [${level}]:`, message);
-  }
-
-  private logs(
-    level: 'emerge' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug',
-    message: string,
-  ) {
+  private logs(level: Levels, message: string) {
     if (!this.printOnly && this.logUrl) {
       const url = `${this.logUrl}/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
-      const { info, debug, error, warn } = console;
-      switch (level) {
-        case 'warning':
-          this.console(warn, 'warning', message);
-        case 'info':
-          this.console(info, 'info', message);
-          break;
-        case 'debug':
-          this.console(debug, 'debug', message);
-          break;
-        case 'error':
-          this.console(error, 'error', message);
-          break;
-      }
+      console.log(chalk.gray(dayjs().format('DD/MM/YYYY, hh:mm:dd:ss')), '[', colors[level](level), '] :', message);
     }
   }
 

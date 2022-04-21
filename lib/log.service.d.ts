@@ -3,7 +3,6 @@ export declare class Logger {
     printOnly: boolean;
     application: string;
     constructor(application: string, printOnly?: boolean);
-    private console;
     private logs;
     info(message: string): void;
     debug(message: string): void;
