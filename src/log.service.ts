@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Log from '@ptkdev/logger';
+import Log, { LoggerOptions } from '@ptkdev/logger';
 
 export class Logger {
   logUrl: string | undefined;
@@ -11,10 +11,20 @@ export class Logger {
       throw new Error('Application name cannot be null');
     }
 
+    const options: LoggerOptions = {
+      language: 'en',
+      colors: true,
+      debug: true,
+      info: true,
+      warning: true,
+      error: true,
+      sponsor: false,
+    };
+
     this.printOnly = printOnly;
     this.logUrl = process.env.LOG_URL;
     this.application = application;
-    this.log = new Log();
+    this.log = new Log(options);
   }
 
   private console(fn: Function, message: string) {
