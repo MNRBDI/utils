@@ -1,46 +1,64 @@
 import axios from 'axios';
-
-const logUrl = process.env.LOG_URL;
+import Log from '@ptkdev/logger';
 
 export class Logger {
+  logUrl: string | undefined;
+  printOnly: boolean;
   application: string;
-  constructor(application: string) {
+  log: Log;
+  constructor(application: string, printOnly = false) {
+    if (!application) {
+      throw new Error('Application name cannot be null');
+    }
+
+    this.printOnly = printOnly;
+    this.logUrl = process.env.LOG_URL;
     this.application = application;
+    this.log = new Log();
   }
 
-  private console(fn: Function, level: string, message: string) {
-    fn.call(null, level.toUpperCase(), ':', this.application, ':', message);
+  private console(fn: Function, message: string) {
+    fn.call(null, this.application, ':', message);
   }
 
-  private log(level: 'emerge' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug', message: string) {
-    if (logUrl) {
-      const url = `${logUrl}/${this.application}/${level}`;
+  private logs(
+    level: 'emerge' | 'alert' | 'crit' | 'error' | 'warning' | 'notice' | 'info' | 'debug',
+    message: string,
+  ) {
+    if (!this.printOnly && this.logUrl) {
+      const url = `${this.logUrl}/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
-      const { info, debug, error } = console;
+      const { info, debug, error, warning } = this.log;
       switch (level) {
+        case 'warning':
+          this.console(warning, message);
         case 'info':
-          this.console(info, level, message);
+          this.console(info, message);
           break;
         case 'debug':
-          this.console(debug, level, message);
+          this.console(debug, message);
           break;
         case 'error':
-          this.console(error, level, message);
+          this.console(error, message);
           break;
       }
     }
   }
 
   info(message: string) {
-    this.log('info', message);
+    this.logs('info', message);
   }
 
   debug(message: string) {
-    this.log('debug', message);
+    this.logs('debug', message);
   }
 
   error(message: string) {
-    this.log('error', message);
+    this.logs('error', message);
+  }
+
+  warning(message: string) {
+    this.logs('warning', message);
   }
 }

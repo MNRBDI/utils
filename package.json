@@ -19,6 +19,7 @@
   "author": "Muiz Musaddik <abdul.muiz@mnrb.com.my>",
   "license": "ISC",
   "dependencies": {
+    "@ptkdev/logger": "^1.8.0",
     "axios": "^0.24.0",
     "dayjs": "^1.10.7"
   },
