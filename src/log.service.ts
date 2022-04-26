@@ -30,7 +30,7 @@ export class Logger {
 
   private logs(level: Levels, message: string) {
     if (!this.printOnly && this.logUrl) {
-      const url = `${this.logUrl}/${this.application}/${level}`;
+      const url = `${this.logUrl}/api/v1/${this.application}/${level}`;
       axios.post(url, { message });
     } else {
       console.log(chalk.gray(dayjs().format('YYYY-MM-DD hh:mm:ss')), '[' + colors[level](level) + '] :', message);
